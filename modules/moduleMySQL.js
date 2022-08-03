@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
 	password: "123"
 });
 
-let read = () =>{
+let read = () => {
 	console.log("Запущен модуль чтения для MySQL");
 	
 	connection.connect(function(err){
@@ -34,7 +34,7 @@ let read = () =>{
 	});
 	
 }
-let write = () =>{
+let write = (clientID,date,value,measureType,comment) => {
 	console.log("Запущен модуль записи для MySQL");
 	
 	connection.connect(function(err){
@@ -47,7 +47,7 @@ let write = () =>{
 	});
 	
 	//--Запись данных в базу
-	const user = ["Supercomputer", "Temperature", 26, "2022-08-01 00:26:00", "Test BD"];
+	const user = [clientID, measureType, value, date, comment];
 	const sql = "INSERT INTO dataFromSensors(ClientID, MeasureType, Value, Date, Comment) VALUES(?, ?, ?, ?, ?)";
 	connection.query(sql, user, function(err, results) {
     	if(err) console.log(err);
@@ -55,12 +55,12 @@ let write = () =>{
 	});
 	//-----
 
-	connection.end(function(err) {
-		if (err) {
-    		return console.log("Ошибка: " + err.message);
-  		}
-  		console.log("Подключение закрыто");
-	});
+	//connection.end(function(err) {
+	//	if (err) {
+    //		return console.log("Ошибка: " + err.message);
+  	//	}
+  	//	console.log("Подключение закрыто");
+  //});
 	//-----------------------
 	
 }

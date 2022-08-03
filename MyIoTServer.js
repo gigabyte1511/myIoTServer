@@ -37,12 +37,18 @@ const requestListener = function (request, response) {
   		request.on('end', () => {
   			body = Buffer.concat(body).toString();
   			console.log(body);
+  			var parseBody = JSON.parse(body);
+  			mySQL.write(parseBody.clientID, parseBody.date, parseBody.value, 
+  							parseBody.measureType, parseBody.comment);
+    		console.log(parseBody.type);
+
+  			
   		});
         
-    console.log("Полученные данные:" + body); 
+    //console.log("Полученные данные:" + body); 
     response.writeHead(200);
     response.end("POST data received");
-    //var pars = JSON.parse(body);
+    //console.log(body1);
 	}
 	
 	//const { headers, method, url } = request;
@@ -58,19 +64,6 @@ const requestListener = function (request, response) {
 
 const server = http.createServer(requestListener);
 server.listen(port, host, 511, console.log(`Server is running on http://${host}:${port}`));
+
 // ---------- >mySQL.read();
 // ---------- >mySQL.write();
-//console.log(expFunction);
-//const myObj = {
-//  name: 'Skip',
-//  age: 2,
-//  favoriteFood: 'Steak'
-//};
-
-//const myObjStr = JSON.stringify(myObj);
-
-//console.log(myObjStr);
-// "{"name":"Sammy","age":6,"favoriteFood":"Tofu"}"
-
-//console.log(JSON.parse(myObjStr));
-// Object {name:"Sammy",age:6,favoriteFood:"Tofu"}
