@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 const requestListener = function (request, response) {
 
 	if (request.url == "/" && request.method == "GET"){
-		console.log("Есть запрос на Url: " + request.url + "методом GET");
+		console.log("Есть запрос на Url: " + request.url + " методом GET");
 			
 		fs.readFile(__dirname + "/html/index.html").then(contents => {
         	response.setHeader("Content-Type", "text/html");
@@ -27,10 +27,21 @@ const requestListener = function (request, response) {
         	response.end(contents);
         	console.log("Содержимое html отправлено клиенту");
         });
-
 	}
-	if (request.url == "/api/write" && request.method == "POST"){
-		console.log("Есть запрос на Url: " + request.url + "методом POST");
+	
+	if (request.url == "/style.css" && request.method == "GET"){
+		console.log("Есть запрос на Url: " + request.url + " методом GET");
+			
+		fs.readFile(__dirname + "/html/style.css").then(contents => {
+        	response.setHeader("Content-Type", "text/css");
+        	response.writeHead(200);
+        	response.end(contents);
+        	console.log("Содержимое css отправлено клиенту");
+        });
+    }
+    
+	if (request.url == "/api/iot/write" && request.method == "POST"){
+		console.log("Есть запрос на Url: " + request.url + " методом POST");
 		var body = [];
   		request.on('error', (err) => { console.error(err)});
   		request.on('data', (chunk) => { body.push(chunk) });
@@ -64,6 +75,3 @@ const requestListener = function (request, response) {
 
 const server = http.createServer(requestListener);
 server.listen(port, host, 511, console.log(`Server is running on http://${host}:${port}`));
-
-// ---------- >mySQL.read();
-// ---------- >mySQL.write();
