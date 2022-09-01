@@ -6,35 +6,34 @@ const connection = mysql.createConnection({
 	user: "test",
 	database: "Test",
 	password: "123"
-});
+}).promise();
 
-let read = () => {
+var read= async () => {
+	//async
 	console.log("Запущен модуль чтения для MySQL");
-	
-	connection.connect(function(err){
-		if (err) {
-			return console.error("Ошибка: " + err.message);
-    	}
-    	else{
-    		console.log("Подключение к серверу MySQL успешно установлено");
-    	}
-	});
- 	//--Чтение данных из базы
-	connection.query("SELECT * FROM dataFromSensors", function(err, results, fields) {
-    	console.log(err);
-    	console.log(results); // собственно данные
-    	//console.log(fields); // мета-данные полей 
-	}); 
-	
-	connection.end(function(err) {
-		if (err) {
-    		return console.log("Ошибка: " + err.message);
-  		}
-  		console.log("Подключение закрыто");
-	});
-	
-}
-let write = (clientID,date,value,measureType,comment) => {
+	await connection.connect()
+	.then(res=>{
+	 console.log('Успешно подключено')
+	})
+	.catch(err=>{
+	 console.log('Возникла ошибка')
+	})
+   
+	 //--Чтение данных из базы
+	await connection.query("SELECT * FROM dataFromSensors")
+	.then(res=>{
+	 results = res
+	})
+	.catch(err=>{
+		console.log(err)
+	   })
+   
+	//console.log(results);
+	return results;
+   }
+  
+
+let write = (clientID,date,value,measureType,voltage,gps,comment) => {
 	console.log("Запущен модуль записи для MySQL");
 	
 	connection.connect(function(err){
@@ -47,25 +46,17 @@ let write = (clientID,date,value,measureType,comment) => {
 	});
 	
 	//--Запись данных в базу
-	const user = [clientID, measureType, value, date, comment];
+	const user = [clientID, measureType, value, date, voltage, gps, comment];
 	const sql = "INSERT INTO dataFromSensors(ClientID, MeasureType, Value, Date, Comment) VALUES(?, ?, ?, ?, ?)";
 	connection.query(sql, user, function(err, results) {
     	if(err) console.log(err);
     	else console.log("Данные добавлены");
 	});
-	//-----
 
-	//connection.end(function(err) {
-	//	if (err) {
-    //		return console.log("Ошибка: " + err.message);
-  	//	}
-  	//	console.log("Подключение закрыто");
-  //});
-	//-----------------------
-	
 }
 
 module.exports = {
 	read,
 	write,
+
 } 
