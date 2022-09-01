@@ -1,52 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My IoT Server</title>
-  <meta name="viewport" content="width=device-width, initialscale=1">
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <meta charset="utf-8">
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My IoT Server</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="header">
-		<h1>My IoT Server</h1>			
-	</div>
-	<div id="chart_div" style='width: 900px; height: 600px;'></div>
-	
-	<div class="footer"> 
-		IoT V1.0 (powered by Node.js)
-	</div>
-	
+    <header>
+        <div class="logo_block">
+            <img class="logo_img" src="img/iot-icon.svg" alt="logo">
+            <h1>My IoT Server</h1>
+        </div>
+        <nav>
+            <div class="navigation_block">
+                <a  class="navigation_block__tab" href="#home_tab">
+                    <img src="img/home-logo.svg" alt="">
+                    Home
+                </a>
+                <a class="navigation_block__tab" href="#analytic_tab">
+                    <img src="img/analytic-logo.svg" alt="">
+                    Analytics
+                </a>
+                <a class="navigation_block__tab" href="#devices_tab">
+                    <img src="img/device-logo.svg" alt="">
+                    Devices
+                </a>
+                <a class="navigation_block__tab" href="#settings_tab">
+                    <img src="img/settings-logo.svg" alt="">
+                    Settings
+                </a>
+            </div>
+        </nav>
+    </header>
+    <div class="tabs__body">
+        <div id="home_tab" class="tabs__block">
+            <div class="home_tab_body">
+                <div class="home_tab_body_statistic">
+                    <div>Status:</div>
+                    <div>Numbers of devices:</div>
+                    <div>Time of last received information:</div>
+                    <div>Numbers of data string:</div>
+                    <div>Kbyte transferred:</div>
+                    <div>Kbyte received:</div>
+                </div>
+                <div class="home_tab_body_map">
+                    <!-- <img src="img/worldmap.svg" alt=""> -->
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51574203.39366619!2d68.81944469857098!3d49.81255979053938!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x453c569a896724fb%3A0x1409fdf86611f613!2z0KDQvtGB0YHQuNGP!5e1!3m2!1sru!2sru!4v1661342350188!5m2!1sru!2sru" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+        <div id="analytic_tab" class="tabs__block">
+            <div class="analytic_tab_body">
+                <div>
+                    Выбор устройства
+                    <select name="" id="">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div>
+                    Выбор величины
+                    <select name="" id="">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div>
+                    Временной промежуток 
+                    <select name="" id="">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div>
+                    Выбор графика
+                    <select name="" id="">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div>
+                    На первом графике
+                    <input type="checkbox">
+                </div>
+                <div>
+                    График
+                </div>
+            </div>
+        </div>
+        <div id="devices_tab" class="tabs__block">
+            <div class="devices_tab_body">
+                <div class="devices_tabel_block">
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_ClientID">ClientID
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_MeasureType">Measure type
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_LastValue">Last value
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_LastDate">Last date
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_Voltage">Voltage
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_GPS">GPS
+                        
+                    </div>
+                    <div class="devices_tabel_block_header" id="devices_tabel_block_header_Comment">Comment
+                        
+                    </div>
+                </div>
+                <div class="devices_console">
+                    <div class="devices_console_header">
+                        <div>Console</div>
+                        <div><button>close</button></div>
+                    </div>
+                    <div class="devices_console_body">
+                        <textarea name="" id="console.test"></textarea>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="settings_tab" class="tabs__block">
+            Четвертая
+        </div>
+    </div>
+    <footer>
+        <p>2022 My IoT Server. Powered by node.js</p>
+    </footer>
 </body>
-<script>
-       google.charts.load('current', {'packages':['annotationchart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date');
-        data.addColumn('number', 'Value');
-        data.addColumn('string', 'IoT title');
-        data.addColumn('string', 'IoT text');
-
-        data.addRows([
-          [new Date(2022, 08, 01, 14, 31, 00), 15, 'ESP32', 'Temperature from ESP32'],
-          [new Date(2022, 08, 02, 14, 32, 00), 17, 'ESP32', 'Temperature from ESP32'],
-          [new Date(2022, 08, 03, 14, 33, 00), 20, 'ESP32', 'Temperature from ESP32'],
-          [new Date(2022, 08, 04, 14, 34, 00), 30, 'ESP32', 'Temperature from ESP32'],
-          [new Date(2022, 08, 05, 14, 35, 00), 22, 'ESP32', 'Temperature from ESP32'],
-          [new Date(2022, 08, 06, 14, 36, 00), 18, 'ESP32', 'Temperature from ESP32']
-         
-        ]);
-
-        var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
-
-        var options = {
-          displayAnnotations: true
-        };
-
-        chart.draw(data, options);
-      }
-</script>
 </html>
+<script>
+    
+    let readServerPost = new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest(); // инициализируем переменную новым объектом XMLHttpRequest
+		xhr.open("POST", "api/client/read"); // определяем параметры для запроса 
+		xhr.send(); // отправляем запрос на сервер
+        xhr.onload = function() {
+			if (xhr.status != 200) { // анализируем HTTP-статус ответа, если статус не 200, то произошла ошибка
+				alert(`Ошибка ${xhr.status}: ${xhr.statusText}`); // Например, 404: Not Found
+			} 
+			else { 
+				var getBody = JSON.parse(xhr.responseText);
+                resolve(getBody);	
+			}
+		};
+    })
+
+    .then(res=>{
+        devices(res);
+        consoleWrite(res);
+
+    })
+
+    let devices = (getParam) =>{
+
+        let deviceName = new Set();
+        //Определение ClientID из массива
+        for (i=0; i<getParam.length; i++){
+            deviceName.add(getParam[i].ClientID);
+        }
+        // let deviceNameArr = Object.keys(deviceName);
+        let deviceCount = 0;
+        let deviceNameArr = [];
+
+        for (let value of deviceName){
+            deviceNameArr[deviceCount]= value;
+            deviceCount++;
+        }
+        //console.log(deviceName);
+        console.log(deviceNameArr);
+        for (i = 0; i<deviceNameArr.length; i++ ){
+            console.log(deviceNameArr[i]);
+            //Поиск и запись всех показаний одного устройства в массив
+            let deviceFiltered = getParam.filter(function (device) {
+                if (device.ClientID == deviceNameArr[i]) {
+                    console.log(device);
+                    return device;
+                }
+            });
+            console.log(deviceFiltered);
+            //Опрдеделение строки с последним показанием устройства
+            let deviceLastID = deviceFiltered.reduce(function(prev, current) {
+                if (current.ID > prev.ID) {
+                    return current;
+                } else {
+                    return prev;
+                }
+
+            });
+            console.log(deviceLastID);
+
+            var clientID = document.createElement('div');
+            clientID.innerHTML = deviceLastID.ClientID
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_ClientID").append(clientID);  
+            
+            var measureType = document.createElement('div');
+            measureType.innerHTML = deviceLastID.MeasureType
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_MeasureType").append(measureType);  
+
+            var value = document.createElement('div');
+            value.innerHTML = deviceLastID.Value
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_LastValue").append(value);  
+
+            var date = document.createElement('div');
+            date.innerHTML = deviceLastID.Date
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_LastDate").append(date);  
+
+            var voltage = document.createElement('div');
+            voltage.innerHTML = deviceLastID.Voltage
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_Voltage").append(voltage);  
+
+            var gps = document.createElement('div');
+            gps.innerHTML = deviceLastID.GPS
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_GPS").append(gps);  
+
+            var comment = document.createElement('div');
+            comment.innerHTML = deviceLastID.Comment
+		    //task.className = "task";
+		    document.getElementById("devices_tabel_block_header_Comment").append(comment);  
+
+        }
+    }
+
+    let consoleWrite = (getParam) =>{
+        let readPostString = "";
+        for (i=0; i < getParam.length; i++ ){
+            readPostString = readPostString + JSON.stringify(getParam[i]) + "\r\n\r\n";
+        }
+		document.getElementById('console.test').innerHTML= "Get response from server:" + "\r\n\r\n" +readPostString;          
+    }
+</script>
