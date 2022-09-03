@@ -59,7 +59,7 @@
             <!-- <div class="analytic_tab_body"> -->
             <div>
                 <div>
-                    <select name="" id="analyticTab__selectDevise" onchange="selectDeviceForGChart()" >
+                    <select name="" id="analyticTab__selectDevice" onchange="selectDeviceForGChart()" >
                     </select>
                 </div>
                 <div id="analyticTab__selectMeasureTypeDiv">
@@ -242,7 +242,7 @@
 		    //task.className = "task";
 		    document.getElementById("devices_tabel_block_header_Comment").append(comment);  
 
-            var selectDevice = document.getElementById("analyticTab__selectDevise");
+            var selectDevice = document.getElementById("analyticTab__selectDevice");
             var option = document.createElement("option");
             option.value = deviceNameArr[i];
             //console.log(option.value);
@@ -260,28 +260,38 @@
 		document.getElementById('console.test').innerHTML= "Get response from server:" + "\r\n\r\n" +readPostString;          
     }
 
-    function googleCharts(){
+    function googleCharts(clientID,measureType, value, date){
         google.charts.load('current', {'packages':['annotationchart']});
         google.charts.setOnLoadCallback(drawChart);
+        console.log(value);
+        console.log(date);
+
+        // console.log(new Date(date[0]));
+        console.log(new Number(value[0]));
 
         function drawChart() {
             var data = new google.visualization.DataTable();
-            data.addColumn('date', 'Date');
-            data.addColumn('number', 'Kepler-22b mission');
-            data.addColumn('string', 'Kepler title');
-            data.addColumn('string', 'Kepler text');
+            data.addColumn("date", 'Date');
+            data.addColumn("number", clientID + ":"+ measureType);
+            // data.addColumn('string', 'Kepler title');
+            // data.addColumn('string', 'Kepler text');
             // data.addColumn('number', 'Gliese 163 mission');
             // data.addColumn('string', 'Gliese title');
             // data.addColumn('string', 'Gliese text');
-            data.addRows([
-                [new Date("1995-12-17T03:24:00"), 25, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:25:00"), 20, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:26:00"), 22, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:27:00"), 23, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:28:00"), 24, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:29:00"), 25, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:30:00"), 22, "ESP32","Temperature"],
-                [new Date("1995-12-17T03:31:00"), 23, "ESP32","Temperature"]
+            // data.addRows([[new Date("1995-12-17T03:25:00"), 20],]);
+            // data.addRows([[new Date("1995-12-17T03:30:00"), 25],]);
+            for (i = 0; i < date.length; i++){
+                data.addRows([[new Date(date[i]), Number(value[i])]]);
+            }
+            // data.addRows([
+            //     [date, value, ],
+                // [new Date("1995-12-17T03:25:00"), 20, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:26:00"), 22, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:27:00"), 23, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:28:00"), 24, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:29:00"), 25, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:30:00"), 22, "ESP32","Temperature"],
+                // [new Date("1995-12-17T03:31:00"), 23, "ESP32","Temperature"]
             // [new Date(2314, 2, 15), 12400, undefined, undefined,
             //                         10645, undefined, undefined],
             // [new Date(2314, 2, 16), 24045, 'Lalibertines', 'First encounter',
@@ -294,7 +304,7 @@
             //                         66467, 'Gallantors', 'Mysteries revealed'],
             // [new Date(2314, 2, 20), 0, 'Lalibertines', 'All crew lost',
             //                         79463, 'Gallantors', 'Omniscience achieved']
-            ]);
+            //]);
             var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
 
             var options = {
@@ -304,18 +314,13 @@
             chart.draw(data, options);
         }
     }
-    googleCharts();
+
 
     function selectDeviceForGChart (){
-        // console.log(arrayX.length);
-        // console.log(arrayX);
-        // console.log(arrayX[0].length);
-        // console.log(arrayX[0]);
-        
+
+
         let DeviceData = [];
-        //console.log(arrayX);
-        //console.log(arrayX[0][0]);
-        var selectDevice = document.getElementById("analyticTab__selectDevise");
+        var selectDevice = document.getElementById("analyticTab__selectDevice");
         //console.log(selectDevice.value);
         let k = 0;
         for (let i = 0; i < dataFromServerBD.length; i++){
@@ -364,6 +369,25 @@
 
     }
     function f(){
-        alert("Test!")
+        let selectedMeasureType = document.getElementById("analyticTab__selectMeasureType");
+        let selectedDevice = document.getElementById("analyticTab__selectDevice");
+        console.log(dataFromServerBD);
+        let value = [];
+        let date = [];
+        
+        for (let i = 0; i<dataFromServerBD.length; i++){
+            for (let j = 0; j<dataFromServerBD[i].length; j++){
+                if(dataFromServerBD[i][j].ClientID == selectedDevice.value){
+                    console.log("done!")
+                    value[j] = dataFromServerBD[i][j].Value;
+                    date[j] = dataFromServerBD[i][j].Date;
+                }
+                //else break;
+            }
+        }
+        // console.log(value);
+        // console.log(date);
+        googleCharts(selectedDevice.value ,selectedMeasureType.value, value, date);
+
     }
 </script>
