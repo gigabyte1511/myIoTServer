@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
     <header>
@@ -55,8 +56,16 @@
             </div>
         </div>
         <div id="analytic_tab" class="tabs__block">
-            <div class="analytic_tab_body">
+            <!-- <div class="analytic_tab_body"> -->
+            <div>
                 <div>
+                    <select name="" id="analyticTab__selectDevise" onchange="selectDeviceForGChart()" >
+                    </select>
+                </div>
+                <div id="analyticTab__selectMeasureTypeDiv">
+                </div>
+                <div id="chart_div"></div>
+                <!-- <div>
                     Выбор устройства
                     <select name="" id="">
                         <option value=""></option>
@@ -86,7 +95,7 @@
                 </div>
                 <div>
                     График
-                </div>
+                </div> -->
             </div>
         </div>
         <div id="devices_tab" class="tabs__block">
@@ -136,7 +145,7 @@
 </body>
 </html>
 <script>
-    
+    let dataFromServerBD = [];
     let readServerPost = new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest(); // инициализируем переменную новым объектом XMLHttpRequest
 		xhr.open("POST", "api/client/read"); // определяем параметры для запроса 
@@ -178,6 +187,7 @@
         for (i = 0; i<deviceNameArr.length; i++ ){
             console.log(deviceNameArr[i]);
             //Поиск и запись всех показаний одного устройства в массив
+            let j = 0;
             let deviceFiltered = getParam.filter(function (device) {
                 if (device.ClientID == deviceNameArr[i]) {
                     console.log(device);
@@ -185,6 +195,7 @@
                 }
             });
             console.log(deviceFiltered);
+            dataFromServerBD[i]=deviceFiltered;
             //Опрдеделение строки с последним показанием устройства
             let deviceLastID = deviceFiltered.reduce(function(prev, current) {
                 if (current.ID > prev.ID) {
@@ -231,6 +242,13 @@
 		    //task.className = "task";
 		    document.getElementById("devices_tabel_block_header_Comment").append(comment);  
 
+            var selectDevice = document.getElementById("analyticTab__selectDevise");
+            var option = document.createElement("option");
+            option.value = deviceNameArr[i];
+            //console.log(option.value);
+            option.text = deviceNameArr[i];
+            selectDevice.add(option);
+
         }
     }
 
@@ -240,5 +258,112 @@
             readPostString = readPostString + JSON.stringify(getParam[i]) + "\r\n\r\n";
         }
 		document.getElementById('console.test').innerHTML= "Get response from server:" + "\r\n\r\n" +readPostString;          
+    }
+
+    function googleCharts(){
+        google.charts.load('current', {'packages':['annotationchart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', 'Kepler-22b mission');
+            data.addColumn('string', 'Kepler title');
+            data.addColumn('string', 'Kepler text');
+            // data.addColumn('number', 'Gliese 163 mission');
+            // data.addColumn('string', 'Gliese title');
+            // data.addColumn('string', 'Gliese text');
+            data.addRows([
+                [new Date("1995-12-17T03:24:00"), 25, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:25:00"), 20, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:26:00"), 22, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:27:00"), 23, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:28:00"), 24, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:29:00"), 25, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:30:00"), 22, "ESP32","Temperature"],
+                [new Date("1995-12-17T03:31:00"), 23, "ESP32","Temperature"]
+            // [new Date(2314, 2, 15), 12400, undefined, undefined,
+            //                         10645, undefined, undefined],
+            // [new Date(2314, 2, 16), 24045, 'Lalibertines', 'First encounter',
+            //                         12374, undefined, undefined],
+            // [new Date(2314, 2, 17), 35022, 'Lalibertines', 'They are very tall',
+            //                         15766, 'Gallantors', 'First Encounter'],
+            // [new Date(2314, 2, 18), 12284, 'Lalibertines', 'Attack on our crew!',
+            //                         34334, 'Gallantors', 'Statement of shared principles'],
+            // [new Date(2314, 2, 19), 8476, 'Lalibertines', 'Heavy casualties',
+            //                         66467, 'Gallantors', 'Mysteries revealed'],
+            // [new Date(2314, 2, 20), 0, 'Lalibertines', 'All crew lost',
+            //                         79463, 'Gallantors', 'Omniscience achieved']
+            ]);
+            var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
+
+            var options = {
+            displayAnnotations: true
+            };
+
+            chart.draw(data, options);
+        }
+    }
+    googleCharts();
+
+    function selectDeviceForGChart (){
+        // console.log(arrayX.length);
+        // console.log(arrayX);
+        // console.log(arrayX[0].length);
+        // console.log(arrayX[0]);
+        
+        let DeviceData = [];
+        //console.log(arrayX);
+        //console.log(arrayX[0][0]);
+        var selectDevice = document.getElementById("analyticTab__selectDevise");
+        //console.log(selectDevice.value);
+        let k = 0;
+        for (let i = 0; i < dataFromServerBD.length; i++){
+            for(let j = 0; j< dataFromServerBD[i].length; j++){
+
+                if(dataFromServerBD[i][j].ClientID == selectDevice.value){
+                    DeviceData[j] = dataFromServerBD[i][j]; 
+                    k++;
+                }
+
+            }
+        }
+        console.log(DeviceData);
+        let MeasureTypeSet = new Set();
+        //Определение ClientID из массива
+        for (i=0; i<DeviceData.length; i++){
+            MeasureTypeSet.add(DeviceData[i].MeasureType);
+        }
+        let MeasureTypeCount = 0;
+        let MeasureTypeArr = [];
+
+        for (let value of MeasureTypeSet){
+            MeasureTypeArr[MeasureTypeCount]= value;
+            MeasureTypeCount++;
+        }
+        console.log(DeviceData);
+        console.log(MeasureTypeArr);
+
+        var selectDevice = document.getElementById("analyticTab__selectMeasureTypeDiv");
+        const select = document.createElement("select");
+        select.id = "analyticTab__selectMeasureType";
+
+        for(let i = 0; i < MeasureTypeArr.length; i++ ){
+            var option = document.createElement("option");
+            option.value = MeasureTypeArr[i];
+            option.text = MeasureTypeArr[i];
+            select.add(option);
+        }
+        selectDevice.appendChild(select);
+
+        var selectDevice = document.getElementById("analyticTab__selectMeasureTypeDiv");
+        const button = document.createElement("button");
+        button.innerHTML = "Test";
+        button.setAttribute("onclick","f()");
+        selectDevice.appendChild(button);
+
+    }
+    function f(){
+        alert("Test!")
     }
 </script>
